@@ -1,5 +1,6 @@
 module.exports = {
     
     "serverAddress":"http://google.com/",
-    "api":"hi"
+    "api":"hi",
+    "wrapperId":"terminalWrapper"
 };

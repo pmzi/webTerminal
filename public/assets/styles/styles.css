@@ -1,3 +1,10 @@
+/*Colors*/
+
+.mainBackBlack{
+    background-color: #7f8c8d;
+}
+
+/*Main Styles*/
 #terminalWrapper{
     width:100%;
     height:100%;
@@ -7,5 +14,38 @@
     bottom: 0px;
     top:0px;
     display: table;
-    background-color:#eee;
+    padding:5px 0px 5px 5px;
+    font-family:'Fira Sans';
+}
+#cursor{
+    -webkit-animation-name: blinking;
+    -moz-animation-name: blinking;
+    -o-animation-name: blinking;
+    animation-name: blinking;
+    animation-duration: 0.4s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    color:white;
+}
+/*Content Styles*/
+.line{
+    display: block;
+    line-height:25px;
+    height:25px;
+}
+.success{
+    color: #2ecc71;
+}
+.contentOfTheLine{
+    padding-left:5px;
+}
+/*Animations*/
+
+@keyframes blinking {
+    from{
+        opacity:0;
+    }
+    to{
+        opacity:100;
+    }
 }
