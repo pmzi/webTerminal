@@ -39,29 +39,43 @@ class Commands {
 
         this.logger = new Logger(wrapperId);
 
-        this.commands = [
+        this.commands;
 
-            {
-                "login": {
+        //Let's Get Commands
 
-                    "username": {
-                        "required": true,
-                        "name":"userName",
-                        "default":null
-                    },
-                    "password": {
-                        "required": true,
-                        "name":"dd",
-                        "default":null
-                    }
+        // this.commands = [
+        //
+        //     {
+        //         "login": {
+        //
+        //             "username": {
+        //                 "required": true,
+        //                 "name":"userName",
+        //                 "default":null
+        //             },
+        //             "password": {
+        //                 "required": true,
+        //                 "name":"dd",
+        //                 "default":null
+        //             }
+        //
+        //         },
+        //         "url": "http://localhost/a.php",
+        //         "method": "post",
+        //         "auth": true
+        //     }
+        //
+        // ];
 
-                },
-                "url": "http://localhost/a.php",
-                "method": "post",
-                "auth": true
-            }
-
-        ];
+        axios.get(serverAddress,{api:api}).then(()=>{
+            let terminalSubmitEvent = new Event("terminal:load");
+            document.dispatchEvent(terminalSubmitEvent);
+            //@todo: some animational success>
+        }).catch(()=>{
+            let terminalSubmitEvent = new Event("terminal:failed");
+            document.dispatchEvent(terminalSubmitEvent);
+            //@todo: some animational error?
+        });
 
     }
 

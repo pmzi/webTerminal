@@ -23,3 +23,19 @@ document.addEventListener("terminal:submit",(e)=>{
     Command.execute(e.detail);
 
 });
+
+document.addEventListener("terminal:load",(e)=>{
+
+    document.querySelector("#"+config.wrapperId+">#terminalLoading").className += " fadeOut";
+
+    setTimeout(()=>{
+        document.querySelector("#"+config.wrapperId+">#terminalLoading").style.display = "none";
+    },300)
+
+});
+
+document.addEventListener("terminal:failed",(e)=>{
+
+    document.querySelector("#"+config.wrapperId+">.terminalMsgWrapper").style.display = "flex";
+
+});
