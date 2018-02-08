@@ -33,6 +33,10 @@ class Commands {
 
         //
 
+        this.auth = false;
+
+        this.api = "";
+
         this.logger = new Logger(wrapperId);
 
         this.commands = [
@@ -45,19 +49,14 @@ class Commands {
                         "name":"userName",
                         "default":null
                     },
-                    "Dd": {
-                        "required": true,
-                        "name":"dd",
-                        "default":null
-                    },
-                    "Ddddd": {
+                    "password": {
                         "required": true,
                         "name":"dd",
                         "default":null
                     }
 
                 },
-                "url": "http://google.com",
+                "url": "http://localhost/a.php",
                 "method": "post",
                 "auth": true
             }
@@ -74,6 +73,10 @@ class Commands {
 
         if(command = this._findOrFail(commandName)){
 
+            if(command.auth == true && this.auth == false){
+                this.logger.error("Command Not Allowed In Guest Mode!");
+                return;
+            }
 
             if(this._countParameters(commandText) != this._countRequiredParameters(command[commandName])){//some parameters are missing!
 
@@ -87,7 +90,7 @@ class Commands {
 
                     let item = this._getCommandByIntIndex(command[commandName],i+parametersLength);
 
-                    this.commndText += " "+await this.logger.getParameter(item.name);
+                    commandText += " "+await this.logger.getParameter(item.name);
 
                     this.logger._commitUserInput();
 
@@ -99,7 +102,43 @@ class Commands {
 
             //We Are All Good!
 
+            if(commandName == "login"){
+                let commandObj = this._getFormData(commandText,command[commandName]);
+                this._processLogin(commandObj,command);
+                return;
+            }
 
+
+
+            if(command.method.toLowerCase() == "get"){
+
+                let commandObj = this._getCommandObject(commandText,command[commandName]);
+
+                axios({
+                    method: 'get',
+                    url: command.url,
+                    params: commandObj
+                }).then((result)=>{
+                    result = JSON.parse(result);
+                    this.logger.success(result.text);
+                }).catch((result)=>{
+                    result = JSON.parse(result);
+                    this.logger.error(result.text);
+                });
+
+            }else{
+
+                let commandObj = this._getFormData(commandText,command[commandName]);
+
+                axios.post(command.url,commandObj).then((result)=>{
+                    result = JSON.parse(result);
+                    this.logger.success(result.text);
+                }).catch((result)=>{
+                    result = JSON.parse(result);
+                    this.logger.error(result.text);
+                });
+
+            }
 
         }else{
 
@@ -138,6 +177,63 @@ class Commands {
             }
 
         }
+
+    }
+
+    _processLogin(commandObj,command){
+
+        if(this.auth == true){
+            this.logger.error("You Have Already Logged In!");
+            return false;
+        }
+
+        axios.post(command.url,commandObj).then((result)=>{
+            result = JSON.parse(result);
+            this.api = result.api;
+            this.auth = true;
+            window.userName = result.username;
+            this.logger.success("You Have Logged In! Welcome <b>"+result.username+"</b>!")
+        }).catch((result)=>{
+            result = JSON.parse(result)
+            this.logger.error(result.text);
+        });
+
+    }
+
+    _getFormData(commandText,command){
+
+        commandText = commandText.trim().split(" ");
+
+        commandText.shift();
+
+        let ret = new FormData();
+        let i = 0;
+        for(let item in command){
+            ret.append(item,commandText[i]);
+            i++;
+        }
+        if(command.auth == true){
+            ret.append("api",this.api);
+        }
+        return ret;
+    }
+
+    _getCommandObject(commandText,command){
+
+        commandText = commandText.trim().split(" ");
+
+        commandText.shift();
+
+        let ret = {};
+        let i = 0;
+        for(let item in command){
+            ret[item] = commandText[i];
+            i++;
+        }
+        if(command.auth == true){
+            ret.api = this.api;
+        }
+        return ret;
 
     }
 
