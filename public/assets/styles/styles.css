@@ -39,6 +39,9 @@
 .contentOfTheLine{
     padding-left:5px;
 }
+.userPartialInput{
+    padding-left:10px;
+}
 /*Animations*/
 
 @keyframes blinking {

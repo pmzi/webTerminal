@@ -71,9 +71,26 @@ class Logger{
         this._reGenerateUserInput();
 
     }
+
+    getParameter(paramName){
+
+        return new Promise((resolve)=>{
+
+            this._generatePartialUserInput(paramName);
+
+            document.addEventListener("terminal:submitPartial",(e)=>{
+
+                resolve(e.detail.trim());
+
+            });
+
+        });
+
+    }
+
     _commitUserInput(){
 
-        let currUserInput = document.querySelector("#"+this.wrapperId+">.userInput[data-active=true]")
+        let currUserInput = document.querySelector("#"+this.wrapperId+">[data-active=true]")
 
         //deActivating Current User Input
 
@@ -95,6 +112,33 @@ class Logger{
         let userNameElement = document.createElement("span");
         userNameElement.classList = "userName";
         userNameElement.innerText = (window.userName || "Guest")+">";
+
+        let contentOfTheLineElement = document.createElement("span");
+        contentOfTheLineElement.className = "contentOfTheLine";
+
+        let cursor = document.createElement("span");
+        cursor.id = "cursor";
+        cursor.innerText = "|";
+
+        //    Let's Append
+
+        lineElement.appendChild(userNameElement);
+        lineElement.appendChild(contentOfTheLineElement);
+        lineElement.appendChild(cursor);
+
+        this.wrapper.appendChild(lineElement);
+
+    }
+
+    _generatePartialUserInput(message){
+
+        let lineElement = document.createElement("div");
+        lineElement.className = "line userPartialInput";
+        lineElement.setAttribute("data-active","true");
+
+        let userNameElement = document.createElement("span");
+        userNameElement.classList = "userName";
+        userNameElement.innerText = message+":";
 
         let contentOfTheLineElement = document.createElement("span");
         contentOfTheLineElement.className = "contentOfTheLine";

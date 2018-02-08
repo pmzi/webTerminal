@@ -26,9 +26,13 @@ class Keyboard {
 
             }else if(e.keyCode == 13){//enter
 
-                let terminalSubmitEvent = new CustomEvent("terminal:submit",{detail:this.wrapper.querySelector("[data-active=true]>.contentOfTheLine").innerText});
-
-                document.dispatchEvent(terminalSubmitEvent);
+                if(this.wrapper.querySelector("[data-active=true]").className.split(" ").includes("userPartialInput")){
+                    let terminalSubmitEvent = new CustomEvent("terminal:submitPartial",{detail:this.wrapper.querySelector("[data-active=true]>.contentOfTheLine").innerText});
+                    document.dispatchEvent(terminalSubmitEvent);
+                }else{
+                    let terminalSubmitEvent = new CustomEvent("terminal:submit",{detail:this.wrapper.querySelector("[data-active=true]>.contentOfTheLine").innerText});
+                    document.dispatchEvent(terminalSubmitEvent);
+                }
 
             }else {
 
@@ -42,7 +46,7 @@ class Keyboard {
 
     type(char){
 
-        let activeLine = this.wrapper.querySelector(".userInput[data-active=true]>.contentOfTheLine");
+        let activeLine = this.wrapper.querySelector("[data-active=true]>.contentOfTheLine");
 
         activeLine.innerText += char;
 
@@ -50,7 +54,7 @@ class Keyboard {
 
     backSpace(){
 
-        let activeLine = this.wrapper.querySelector(".userInput[data-active=true]>.contentOfTheLine");
+        let activeLine = this.wrapper.querySelector("[data-active=true]>.contentOfTheLine");
 
         let temp = activeLine.innerText.split("");
 
