@@ -4,7 +4,7 @@ const axios = require("axios");
 
 /*
 
-List Of Commands:
+ List Of Commands:
 
  [
 
@@ -28,7 +28,7 @@ List Of Commands:
 //login should be login
 
 class Commands {
-    
+
     constructor(serverAddress,api,wrapperId){
 
         //
@@ -44,49 +44,48 @@ class Commands {
         //Let's Get Commands
 
         this.optionalParamRegex = /--(.+?)=([^ ]+)/;
-
-        this.commands = [
-
-            {
-                "login": {
-
-                    "username": {
-                        "required": true,
-                        "name":"userName",
-                        "default":null
-                    },
-                    "password": {
-                        "required": true,
-                        "name":"dd",
-                        "default":null
-                    }
-
-                },
-                "url": "http://localhost/a.php",
-                "method": "post",
-                "auth": false
-            }
-
-        ];
-
-        let terminalLoadEvent = new Event("terminal:load");
-
-        setTimeout(()=>{
-
-            document.dispatchEvent(terminalLoadEvent);
-
-        },500)
-
-
-        // axios.get(serverAddress,{api:api}).then(()=>{
-        //     let terminalSubmitEvent = new Event("terminal:load");
-        //     document.dispatchEvent(terminalSubmitEvent);
+        // this.commands = [
         //
-        // }).catch(()=>{
-        //     let terminalSubmitEvent = new Event("terminal:failed");
-        //     document.dispatchEvent(terminalSubmitEvent);
+        //     {
+        //         "login": {
         //
-        // });
+        //             "username": {
+        //                 "required": true,
+        //                 "name":"userName",
+        //                 "default":null
+        //             },
+        //             "password": {
+        //                 "required": true,
+        //                 "name":"dd",
+        //                 "default":null
+        //             }
+        //
+        //         },
+        //         "url": "http://localhost/a.php",
+        //         "method": "post",
+        //         "auth": false
+        //     }
+        //
+        // ];
+        //
+        // let terminalLoadEvent = new Event("terminal:load");
+        //
+        // setTimeout(()=>{
+        //
+        //     document.dispatchEvent(terminalLoadEvent);
+        //
+        // },500)
+
+
+        axios.get(serverAddress,{api:api}).then((result)=>{
+            let terminalSubmitEvent = new Event("terminal:load");
+            document.dispatchEvent(terminalSubmitEvent);
+            this.commands = result.data;
+        }).catch(()=>{
+            let terminalSubmitEvent = new Event("terminal:failed");
+            document.dispatchEvent(terminalSubmitEvent);
+
+        });
     }
 
     async execute(commandText){
@@ -175,7 +174,7 @@ class Commands {
     }
 
     /*
-        Privates!:)
+     Privates!:)
      */
 
     _getCommandName(commandText){
@@ -216,7 +215,8 @@ class Commands {
         console.log(commandObj)
 
         axios.post(command.url,commandObj).then((result)=>{
-            result = JSON.parse(result);
+            console.error(result)
+            result = result.data;
             this.api = result.api;
             this.auth = true;
             window.userName = result.username;
@@ -318,7 +318,7 @@ class Commands {
             return false;
         }
     }
-    
+
 }
 
 module.exports = Commands;

@@ -1,6 +1,6 @@
 module.exports = {
     
-    "serverAddress":"http://google.com/",
+    "serverAddress":"http://localhost/webTerminal/getCommands.php",
     "api":"hi",
     "wrapperId":"terminalWrapper"
 };
