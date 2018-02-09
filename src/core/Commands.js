@@ -62,10 +62,19 @@ class Commands {
         //         },
         //         "url": "http://localhost/a.php",
         //         "method": "post",
-        //         "auth": true
+        //         "auth": false
         //     }
         //
         // ];
+        //
+        // let terminalLoadEvent = new Event("terminal:load");
+        //
+        // setTimeout(()=>{
+        //
+        //     document.dispatchEvent(terminalLoadEvent);
+        //
+        // },500)
+
 
         axios.get(serverAddress,{api:api}).then(()=>{
             let terminalSubmitEvent = new Event("terminal:load");
@@ -76,7 +85,6 @@ class Commands {
             document.dispatchEvent(terminalSubmitEvent);
             //@todo: some animational error?
         });
-
     }
 
     async execute(commandText){
