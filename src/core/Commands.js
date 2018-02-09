@@ -44,51 +44,53 @@ class Commands {
         //Let's Get Commands
 
         this.optionalParamRegex = /--(.+?)=([^ ]+)/;
-        // this.commands = [
-        //
-        //     {
-        //         "login": {
-        //
-        //             "username": {
-        //                 "required": true,
-        //                 "name":"userName",
-        //                 "default":null
-        //             },
-        //             "password": {
-        //                 "required": true,
-        //                 "name":"dd",
-        //                 "default":null
-        //             }
-        //
-        //         },
-        //         "url": "http://localhost/a.php",
-        //         "method": "post",
-        //         "auth": false
-        //     }
-        //
-        // ];
-        //
-        // let terminalLoadEvent = new Event("terminal:load");
-        //
-        // setTimeout(()=>{
-        //
-        //     document.dispatchEvent(terminalLoadEvent);
-        //
-        // },500)
+        this.commands = [
+
+            {
+                "login": {
+
+                    "username": {
+                        "required": true,
+                        "name":"userName",
+                        "default":null
+                    },
+                    "password": {
+                        "required": true,
+                        "name":"dd",
+                        "default":null
+                    }
+
+                },
+                "url": "http://localhost/a.php",
+                "method": "post",
+                "auth": false
+            }
+
+        ];
+
+        let terminalLoadEvent = new Event("terminal:load");
+
+        setTimeout(()=>{
+
+            document.dispatchEvent(terminalLoadEvent);
+
+        },500)
 
 
-        axios.get(serverAddress,{api:api}).then((result)=>{
-            let terminalSubmitEvent = new Event("terminal:load");
-            document.dispatchEvent(terminalSubmitEvent);
-            this.commands = result.data;
-        }).catch(()=>{
-            let terminalSubmitEvent = new Event("terminal:failed");
-            document.dispatchEvent(terminalSubmitEvent);
-
-        });
+        // axios.get(serverAddress,{api:api}).then((result)=>{
+        //     let terminalSubmitEvent = new Event("terminal:load");
+        //     document.dispatchEvent(terminalSubmitEvent);
+        //     this.commands = result.data;
+        // }).catch(()=>{
+        //     let terminalSubmitEvent = new Event("terminal:failed");
+        //     document.dispatchEvent(terminalSubmitEvent);
+        //
+        // });
     }
 
     async execute(commandText){
+
+        this.logger._commitUserInput();
 
         this.logger.message("Executing The Commands...");
 
@@ -104,8 +106,6 @@ class Commands {
             }
 
             if(this._countParameters(commandText) != this._countRequiredParameters(command[commandName])){//some parameters are missing!
-
-                this.logger._commitUserInput();
 
                 let requiredParametersLength = this._countRequiredParameters(command[commandName]);
 
@@ -170,6 +170,8 @@ class Commands {
             this.logger.error("Command Not Found!");
 
         }
+
+        this.logger._reGenerateUserInput();
 
     }
 

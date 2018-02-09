@@ -8,9 +8,6 @@ class Logger{
     }
 
     message(text){
-        //Commit User Inputs
-        this._commitUserInput();
-
         let lineElement = document.createElement("div");
         lineElement.className = "line message";
         let textElement = document.createElement("span");
@@ -18,15 +15,8 @@ class Logger{
         lineElement.appendChild(textElement);
         this.wrapper.appendChild(lineElement);
 
-        //reGenerate User Input
-
-        this._reGenerateUserInput();
-
     }
     success(text){
-        //Commit User Inputs
-        this._commitUserInput();
-
         let lineElement = document.createElement("div");
         lineElement.className = "line success";
         let textElement = document.createElement("span");
@@ -34,15 +24,8 @@ class Logger{
         lineElement.appendChild(textElement);
         this.wrapper.appendChild(lineElement);
 
-        //reGenerate User Input
-
-        this._reGenerateUserInput();
-
     }
     error(text){
-        //Commit User Inputs
-        this._commitUserInput();
-
         let lineElement = document.createElement("div");
         lineElement.className = "line error";
         let textElement = document.createElement("span");
@@ -50,14 +33,8 @@ class Logger{
         lineElement.appendChild(textElement);
         this.wrapper.appendChild(lineElement);
 
-        //reGenerate User Input
-
-        this._reGenerateUserInput();
-
     }
     warning(text){
-        //Commit User Inputs
-        this._commitUserInput();
 
         let lineElement = document.createElement("div");
         lineElement.className = "line warning";
@@ -65,10 +42,6 @@ class Logger{
         textElement.innerHTML = text;
         lineElement.appendChild(textElement);
         this.wrapper.appendChild(lineElement);
-
-        //reGenerate User Input
-
-        this._reGenerateUserInput();
 
     }
 
