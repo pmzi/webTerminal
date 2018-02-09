@@ -43,51 +43,55 @@ class Commands {
 
         //Let's Get Commands
 
-        // this.commands = [
-        //
-        //     {
-        //         "login": {
-        //
-        //             "username": {
-        //                 "required": true,
-        //                 "name":"userName",
-        //                 "default":null
-        //             },
-        //             "password": {
-        //                 "required": true,
-        //                 "name":"dd",
-        //                 "default":null
-        //             }
-        //
-        //         },
-        //         "url": "http://localhost/a.php",
-        //         "method": "post",
-        //         "auth": false
-        //     }
-        //
-        // ];
-        //
-        // let terminalLoadEvent = new Event("terminal:load");
-        //
-        // setTimeout(()=>{
-        //
-        //     document.dispatchEvent(terminalLoadEvent);
-        //
-        // },500)
+        this.optionalParamRegex = /--(.+?)=([^ ]+)/;
+
+        this.commands = [
+
+            {
+                "login": {
+
+                    "username": {
+                        "required": true,
+                        "name":"userName",
+                        "default":null
+                    },
+                    "password": {
+                        "required": true,
+                        "name":"dd",
+                        "default":null
+                    }
+
+                },
+                "url": "http://localhost/a.php",
+                "method": "post",
+                "auth": false
+            }
+
+        ];
+
+        let terminalLoadEvent = new Event("terminal:load");
+
+        setTimeout(()=>{
+
+            document.dispatchEvent(terminalLoadEvent);
+
+        },500)
 
 
-        axios.get(serverAddress,{api:api}).then(()=>{
-            let terminalSubmitEvent = new Event("terminal:load");
-            document.dispatchEvent(terminalSubmitEvent);
-            //@todo: some animational success>
-        }).catch(()=>{
-            let terminalSubmitEvent = new Event("terminal:failed");
-            document.dispatchEvent(terminalSubmitEvent);
-            //@todo: some animational error?
-        });
+        // axios.get(serverAddress,{api:api}).then(()=>{
+        //     let terminalSubmitEvent = new Event("terminal:load");
+        //     document.dispatchEvent(terminalSubmitEvent);
+        //
+        // }).catch(()=>{
+        //     let terminalSubmitEvent = new Event("terminal:failed");
+        //     document.dispatchEvent(terminalSubmitEvent);
+        //
+        // });
     }
 
     async execute(commandText){
+
+        this.logger.message("Executing The Commands...");
 
         let commandName = this._getCommandName(commandText).toLowerCase();
 
@@ -209,6 +213,8 @@ class Commands {
             return false;
         }
 
+        console.log(commandObj)
+
         axios.post(command.url,commandObj).then((result)=>{
             result = JSON.parse(result);
             this.api = result.api;
@@ -231,9 +237,20 @@ class Commands {
         let ret = new FormData();
         let i = 0;
         for(let item in command){
+            while(this.optionalParamRegex.test(commandText[i])){
+                i++;
+            }
             ret.append(item,commandText[i]);
             i++;
         }
+
+        for(let item of commandText){
+            if(this.optionalParamRegex.test(item)){
+                let matches = this.optionalParamRegex.exec(item);
+                ret.append(matches[1],matches[2]);
+            }
+        }
+
         if(command.auth == true){
             ret.append("api",this.api);
         }
@@ -248,10 +265,22 @@ class Commands {
 
         let ret = {};
         let i = 0;
+        let temp = "";
         for(let item in command){
+            while(this.optionalParamRegex.test(commandText[i])){
+                i++;
+            }
             ret[item] = commandText[i];
             i++;
         }
+
+        for(let item of commandText){
+            if(this.optionalParamRegex.test(item)){
+                let matches = this.optionalParamRegex.exec(item);
+                ret[matches[1]] = matches[2];
+            }
+        }
+
         if(command.auth == true){
             ret.api = this.api;
         }
@@ -260,17 +289,8 @@ class Commands {
     }
 
     _countParameters(commandText){
-
-        commandText = commandText.split(" ");
-
-        commandText.shift();
-
-        return commandText;
-
-    }
-
-    _countParameters(commandText){
-        return commandText.split(" ").length -1;
+        let newCmd = commandText.split(" ").filter(item=>!(this.optionalParamRegex.test(item)) && item.trim() != "");
+        return newCmd.length-1;
     }
 
     _countRequiredParameters(command){
