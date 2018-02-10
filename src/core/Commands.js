@@ -228,6 +228,8 @@ class Commands {
 
                 this.logger.clear();
 
+                this._logout();
+
                 window.close();
 
                 document.dispatchEvent(new Event("terminal:exit"));
@@ -236,6 +238,8 @@ class Commands {
             case "exit":
 
                 this.logger.clear();
+
+                this._logout();
 
                 window.close();
 
@@ -290,9 +294,9 @@ class Commands {
 
         axios.post(command.url,commandObj).then((result)=>{
             result = result.data;
-            this.api = result.api;
-            this.auth = true;
-            window.userName = result.username;
+
+            this._login(result.username,result.api);
+
             this.logger.success("You Have Logged In! Welcome <b>"+result.username+"</b>!");
             this.logger._reGenerateUserInput();
         }).catch((result)=>{
@@ -315,12 +319,20 @@ class Commands {
             return false;
         }
 
-        this.auth = false;
+        this._logout();
 
+    }
+
+    _login(username,api){
+        this.auth = true;
+        window.userName = username;
+        this.api = api;
+    }
+
+    _logout(){
         this.api = null;
-
-        window.username = null;
-
+        this.auth = false;
+        window.userName = null;
     }
 
     _needsHelp(commandText){
