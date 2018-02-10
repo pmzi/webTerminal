@@ -1,13 +1,10 @@
 /*Colors*/
 
 .mainBackBlack{
-    background-color: #7f8c8d;
+    background-color: black;
 }
 
 /*Main Styles*/
-body{
-    overflow: hidden;
-}
 #terminalWrapper{
     width:100%;
     height:100%;
@@ -19,6 +16,7 @@ body{
     display: table;
     padding:5px 0px 5px 5px;
     font-family:'Fira Sans';
+    box-sizing: border-box;
 }
 #cursor{
     -webkit-animation-name: blinking;
@@ -31,10 +29,26 @@ body{
     color:white;
 }
 /*Content Styles*/
+[data-active=true] .userName{
+    color: #2980b9;
+    text-shadow:0px 0px 2px #2980B9;
+}
+[data-active=false] .userName{
+    color: #9b59b6;
+    text-shadow:0px 0px 2px #9b59b6;
+}
+pre{
+    font-family:'Fira Sans';
+    font-size: 16px;
+}
 .line{
     display: block;
     line-height:25px;
     height:25px;
+    color: white;
+}
+.line b{
+    color: #8e44ad;
 }
 .success{
     color: #2ecc71;

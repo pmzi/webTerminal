@@ -47,51 +47,51 @@ class Commands {
 
         this.needHelpRegex = /((.+?)--help)|((.+?)-h)/i;
 
-        // this.commands = [
-        //
-        //     {
-        //         "login": {
-        //
-        //             "username": {
-        //                 "required": true,
-        //                 "name":"userName",
-        //                 "default":null,
-        //                 "description":"username for the login"
-        //             },
-        //             "password": {
-        //                 "required": true,
-        //                 "name":"dd",
-        //                 "default":null,
-        //                 "description":"password for the login"
-        //             }
-        //
-        //         },
-        //         "url": "http://localhost/a.php",
-        //         "method": "post",
-        //         "auth": false,
-        //         "description":"A Method For Authenticating Users."
-        //     }
-        //
-        // ];
-        //
-        // let terminalLoadEvent = new Event("terminal:load");
-        //
-        // setTimeout(()=>{
-        //
-        //     document.dispatchEvent(terminalLoadEvent);
-        //
-        // },500)
+        this.commands = [
+
+            {
+                "login": {
+
+                    "username": {
+                        "required": true,
+                        "name":"userName",
+                        "default":null,
+                        "description":"username for the login"
+                    },
+                    "password": {
+                        "required": true,
+                        "name":"dd",
+                        "default":null,
+                        "description":"password for the login"
+                    }
+
+                },
+                "url": "http://localhost/a.php",
+                "method": "post",
+                "auth": false,
+                "description":"A Method For Authenticating Users."
+            }
+
+        ];
+
+        let terminalLoadEvent = new Event("terminal:load");
+
+        setTimeout(()=>{
+
+            document.dispatchEvent(terminalLoadEvent);
+
+        },500)
 
 
-        axios.get(serverAddress,{api:api}).then((result)=>{
-            let terminalSubmitEvent = new Event("terminal:load");
-            document.dispatchEvent(terminalSubmitEvent);
-            this.commands = result.data;
-        }).catch(()=>{
-            let terminalSubmitEvent = new Event("terminal:failed");
-            document.dispatchEvent(terminalSubmitEvent);
-
-        });
+        // axios.get(serverAddress,{api:api}).then((result)=>{
+        //     let terminalSubmitEvent = new Event("terminal:load");
+        //     document.dispatchEvent(terminalSubmitEvent);
+        //     this.commands = result.data;
+        // }).catch(()=>{
+        //     let terminalSubmitEvent = new Event("terminal:failed");
+        //     document.dispatchEvent(terminalSubmitEvent);
+        //
+        // });
     }
 
     async execute(commandText){
