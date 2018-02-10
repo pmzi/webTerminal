@@ -61,6 +61,20 @@ class Logger{
 
     }
 
+    clear(){
+
+        let elems = this.wrapper.querySelectorAll(".line");
+
+        for(let item of elems){
+
+            item.remove();
+
+        }
+
+
+        this._reGenerateUserInput();
+    }
+
     _commitUserInput(){
 
         let currUserInput = document.querySelector("#"+this.wrapperId+">[data-active=true]")

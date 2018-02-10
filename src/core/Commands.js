@@ -100,6 +100,10 @@ class Commands {
 
         let commandName = this._getCommandName(commandText).toLowerCase();
 
+        // default commands
+
+        if(this._defaultCommands(commandName)) return;
+
         let command = {};
 
         if(command = this._findOrFail(commandName)){
@@ -131,8 +135,6 @@ class Commands {
                     this.logger._commitUserInput();
 
                 }
-
-                this.logger._reGenerateUserInput();
 
             }
 
@@ -199,6 +201,47 @@ class Commands {
     /*
      Privates!:)
      */
+
+    _defaultCommands(commandName){
+        switch (commandName.toLowerCase()){
+            case "cls":
+
+                this.logger.clear();
+
+                break;
+            case "restart":
+
+                window.location.reload(true);
+
+                break;
+            case "bye":
+
+                this.logger.clear();
+
+                window.close();
+
+                document.dispatchEvent(new Event("terminal:exit"));
+
+                break;
+            case "exit":
+
+                this.logger.clear();
+
+                window.close();
+
+                document.dispatchEvent(new Event("terminal:exit"));
+
+                break;
+            default:
+
+                return false;
+
+                break;
+        }
+
+        return true;
+
+    }
 
     _getCommandName(commandText){
         let commandName = "";

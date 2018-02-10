@@ -22,6 +22,12 @@ document.addEventListener("terminal:load",(e)=>{
 
 });
 
+document.addEventListener("terminal:exit",()=>{
+
+    document.querySelector(".terminalMsgWrapper:nth-child(3)").style.display = "flex";
+
+})
+
 document.addEventListener("terminal:failed",(e)=>{
 
     document.querySelector("#"+config.wrapperId+">.terminalMsgWrapper").style.display = "flex";

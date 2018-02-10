@@ -83,9 +83,16 @@ pre{
     vertical-align: middle;
     text-align: center;
 }
-.terminalMsgWrapper{
+.terminalMsgWrapper:nth-child(2){
     background-color:#c0392b;
     color:#e74c3c;
+    font-weight:bold;
+    z-index: 10;
+    display: none;
+}
+.terminalMsgWrapper:nth-child(3){
+    background-color:#8e44ad;
+    color:#9b59b6;
     font-weight:bold;
     z-index: 10;
     display: none;
