@@ -167,8 +167,13 @@ class Commands {
                     this.logger.success(result.text);
                     this.logger._reGenerateUserInput();
                 }).catch((result)=>{
-                    result = JSON.parse(result);
-                    this.logger.error(result.text);
+                    result = result.data;
+                    if(typeof result === "undefined"){
+                        result = "Unknown Error!";
+                    }else{
+                        result = result.text || "Unknown Error!";
+                    }
+                    this.logger.error(result);
                     this.logger._reGenerateUserInput();
                 });
 
@@ -181,8 +186,13 @@ class Commands {
                     this.logger.success(result.text);
                     this.logger._reGenerateUserInput();
                 }).catch((result)=>{
-                    result = JSON.parse(result);
-                    this.logger.error(result.text);
+                    result = result.data;
+                    if(typeof result === "undefined"){
+                        result = "Unknown Error!";
+                    }else{
+                        result = result.text || "Unknown Error!";
+                    }
+                    this.logger.error(result);
                     this.logger._reGenerateUserInput();
                 });
 
@@ -286,8 +296,13 @@ class Commands {
             this.logger.success("You Have Logged In! Welcome <b>"+result.username+"</b>!");
             this.logger._reGenerateUserInput();
         }).catch((result)=>{
-            result = JSON.parse(result)
-            this.logger.error(result.text);
+            result = result.data;
+            if(typeof result === "undefined"){
+                result = "Unknown Error!";
+            }else{
+                result = result.text || "Unknown Error!";
+            }
+            this.logger.error(result);
             this.logger._reGenerateUserInput();
         });
 
