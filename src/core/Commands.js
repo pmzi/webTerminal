@@ -44,55 +44,59 @@ class Commands {
         //Let's Get Commands
 
         this.optionalParamRegex = /--(.+?)=([^ ]+)/;
-        this.commands = [
 
-            {
-                "login": {
+        this.needHelpRegex = /((.+?)--help)|((.+?)-h)/i;
 
-                    "username": {
-                        "required": true,
-                        "name":"userName",
-                        "default":null
-                    },
-                    "password": {
-                        "required": true,
-                        "name":"dd",
-                        "default":null
-                    }
-
-                },
-                "url": "http://localhost/a.php",
-                "method": "post",
-                "auth": false
-            }
-
-        ];
-
-        let terminalLoadEvent = new Event("terminal:load");
-
-        setTimeout(()=>{
-
-            document.dispatchEvent(terminalLoadEvent);
-
-        },500)
-
-
-        // axios.get(serverAddress,{api:api}).then((result)=>{
-        //     let terminalSubmitEvent = new Event("terminal:load");
-        //     document.dispatchEvent(terminalSubmitEvent);
-        //     this.commands = result.data;
-        // }).catch(()=>{
-        //     let terminalSubmitEvent = new Event("terminal:failed");
-        //     document.dispatchEvent(terminalSubmitEvent);
+        // this.commands = [
         //
-        // });
+        //     {
+        //         "login": {
+        //
+        //             "username": {
+        //                 "required": true,
+        //                 "name":"userName",
+        //                 "default":null,
+        //                 "description":"username for the login"
+        //             },
+        //             "password": {
+        //                 "required": true,
+        //                 "name":"dd",
+        //                 "default":null,
+        //                 "description":"password for the login"
+        //             }
+        //
+        //         },
+        //         "url": "http://localhost/a.php",
+        //         "method": "post",
+        //         "auth": false,
+        //         "description":"A Method For Authenticating Users."
+        //     }
+        //
+        // ];
+        //
+        // let terminalLoadEvent = new Event("terminal:load");
+        //
+        // setTimeout(()=>{
+        //
+        //     document.dispatchEvent(terminalLoadEvent);
+        //
+        // },500)
+
+
+        axios.get(serverAddress,{api:api}).then((result)=>{
+            let terminalSubmitEvent = new Event("terminal:load");
+            document.dispatchEvent(terminalSubmitEvent);
+            this.commands = result.data;
+        }).catch(()=>{
+            let terminalSubmitEvent = new Event("terminal:failed");
+            document.dispatchEvent(terminalSubmitEvent);
+
+        });
     }
 
     async execute(commandText){
 
         this.logger._commitUserInput();
-
-        this.logger.message("Executing The Commands...");
 
         let commandName = this._getCommandName(commandText).toLowerCase();
 
@@ -100,8 +104,15 @@ class Commands {
 
         if(command = this._findOrFail(commandName)){
 
+            if(this._needsHelp(commandText)){
+                this._showHelp(command,commandName);
+                this.logger._reGenerateUserInput();
+                return;
+            }
+
             if(command.auth == true && this.auth == false){
                 this.logger.error("Command Not Allowed In Guest Mode!");
+                this.logger._reGenerateUserInput();
                 return;
             }
 
@@ -125,11 +136,17 @@ class Commands {
 
             }
 
+            this.logger.message("Executing The Commands...");
+
             //We Are All Good!
 
             if(commandName == "login"){
                 let commandObj = this._getFormData(commandText,command[commandName]);
                 this._processLogin(commandObj,command);
+                return;
+            }else if(commandName == "logout"){
+                let commandObj = this._getFormData(commandText,command[commandName]);
+                this._processLogout(commandObj,command);
                 return;
             }
 
@@ -146,9 +163,11 @@ class Commands {
                 }).then((result)=>{
                     result = JSON.parse(result);
                     this.logger.success(result.text);
+                    this.logger._reGenerateUserInput();
                 }).catch((result)=>{
                     result = JSON.parse(result);
                     this.logger.error(result.text);
+                    this.logger._reGenerateUserInput();
                 });
 
             }else{
@@ -158,9 +177,11 @@ class Commands {
                 axios.post(command.url,commandObj).then((result)=>{
                     result = JSON.parse(result);
                     this.logger.success(result.text);
+                    this.logger._reGenerateUserInput();
                 }).catch((result)=>{
                     result = JSON.parse(result);
                     this.logger.error(result.text);
+                    this.logger._reGenerateUserInput();
                 });
 
             }
@@ -169,9 +190,9 @@ class Commands {
 
             this.logger.error("Command Not Found!");
 
-        }
+            this.logger._reGenerateUserInput();
 
-        this.logger._reGenerateUserInput();
+        }
 
     }
 
@@ -214,19 +235,59 @@ class Commands {
             return false;
         }
 
-        console.log(commandObj)
-
         axios.post(command.url,commandObj).then((result)=>{
-            console.error(result)
             result = result.data;
             this.api = result.api;
             this.auth = true;
             window.userName = result.username;
-            this.logger.success("You Have Logged In! Welcome <b>"+result.username+"</b>!")
+            this.logger.success("You Have Logged In! Welcome <b>"+result.username+"</b>!");
+            this.logger._reGenerateUserInput();
         }).catch((result)=>{
             result = JSON.parse(result)
             this.logger.error(result.text);
+            this.logger._reGenerateUserInput();
         });
+
+    }
+
+    _processLogout(){
+
+        if(this.auth == false){
+            this.logger.error("You Have Not Been Logged In!");
+            return false;
+        }
+
+        this.auth = false;
+
+        this.api = null;
+
+        window.username = null;
+
+    }
+
+    _needsHelp(commandText){
+        if(this.needHelpRegex.test(commandText)){
+            return true;
+        }
+        return false;
+    }
+
+    _showHelp(command,commandName){
+
+        this.logger.message("Further description on "+commandName+":");
+
+        this.logger.message("<b>Description: </b>"+command.description);
+
+        this.logger.message("<b>Authentication Required: </b>"+command.auth);
+
+        this.logger.message("<b>Method's Params:</b>");
+
+        for(let item in command[commandName]){
+            this.logger.message("\t"+command[commandName][item].name+":");
+            this.logger.message("\t\tDescription: "+command[commandName][item].description || "-");
+            this.logger.message("\t\tRequired: "+command[commandName][item].required);
+            this.logger.message("\t\tDefault: "+command[commandName][item].default);
+        }
 
     }
 

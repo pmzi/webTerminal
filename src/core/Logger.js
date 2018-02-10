@@ -10,7 +10,7 @@ class Logger{
     message(text){
         let lineElement = document.createElement("div");
         lineElement.className = "line message";
-        let textElement = document.createElement("span");
+        let textElement = document.createElement("pre");
         textElement.innerHTML = text;
         lineElement.appendChild(textElement);
         this.wrapper.appendChild(lineElement);
