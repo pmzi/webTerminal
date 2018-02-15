@@ -44,6 +44,14 @@ class Logger{
         this.wrapper.appendChild(lineElement);
 
     }
+    caption(text){
+        let lineElement = document.createElement("div");
+        lineElement.className = "line caption";
+        let textElement = document.createElement("span");
+        textElement.innerHTML = text;
+        lineElement.appendChild(textElement);
+        this.wrapper.appendChild(lineElement);
+    }
 
     getParameter(paramName){
 

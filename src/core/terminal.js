@@ -40,4 +40,6 @@ const Keyboard = new KeyboardClass(config.wrapperId);
 
 const Command = new CommandsClass(config.serverAddress,config.api,config.wrapperId);
 
+Command.logger.caption("To See Available Commands Enter /help");
+
 Command.logger._reGenerateUserInput();//initial

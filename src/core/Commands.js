@@ -25,7 +25,7 @@ const axios = require("axios");
 
 
  */
-//login should be login
+// {{Login Should Be Login}}
 
 class Commands {
 
@@ -47,6 +47,8 @@ class Commands {
 
         this.needHelpRegex = /((.+?)--help)|((.+?)-h)/i;
 
+        this.viewAlCommands = "/help";
+
         this.commands = [
 
             {
@@ -59,8 +61,8 @@ class Commands {
                         "description":"username for the login"
                     },
                     "password": {
-                        "required": true,
-                        "name":"dd",
+                        "required": false,
+                        "name":"password",
                         "default":null,
                         "description":"password for the login"
                     }
@@ -92,6 +94,7 @@ class Commands {
         //     document.dispatchEvent(terminalSubmitEvent);
         //
         // });
+
     }
 
     async execute(commandText){
@@ -202,6 +205,8 @@ class Commands {
 
             this.logger.error("Command Not Found!");
 
+            this.logger.caption("To See Available Commands Enter /help");
+
             this.logger._reGenerateUserInput();
 
         }
@@ -244,6 +249,11 @@ class Commands {
                 window.close();
 
                 document.dispatchEvent(new Event("terminal:exit"));
+
+                break;
+            case this.viewAlCommands:
+
+                this._showAllCommands();
 
                 break;
             default:
@@ -358,6 +368,37 @@ class Commands {
             this.logger.message("\t\tRequired: "+command[commandName][item].required);
             this.logger.message("\t\tDefault: "+command[commandName][item].default);
         }
+
+    }
+
+    _showAllCommands(){
+
+        this.logger.message("<b>A Little Help On Available Commands:</b>");
+
+        this.logger.message("\t<b>Available Commands:</b>");
+
+        for(let item of this.commands){
+            for(let commandName in item){
+                if(typeof item[commandName] == "object"){
+                    let helpText = commandName;
+                    for(let param in item[commandName]){
+                        if(item[commandName][param].required){
+                            helpText += " ["+item[commandName][param].name+"]";
+                        }else{
+                            helpText += " --"+item[commandName][param].name+"=["+item[commandName][param].name+"]";
+                        }
+                    }
+
+                    this.logger.message("\t\t"+helpText);
+                    break;
+                }
+
+            }
+        }
+
+        this.logger.caption("Use <q>[commandName] --help</q> OR <q>[commandName] -h</q> To See Further Help On Each Command")
+
+        this.logger._reGenerateUserInput();
 
     }
 

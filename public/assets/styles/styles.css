@@ -60,6 +60,10 @@ pre{
     font-style: italic;
     color:#d35400;
 }
+.caption{
+    font-style: italic;
+    color: gray;
+}
 .contentOfTheLine{
     padding-left:5px;
 }
