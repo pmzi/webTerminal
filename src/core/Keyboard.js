@@ -9,6 +9,8 @@ class Keyboard {
 
         this.keypress = false;
 
+        this.control = true;
+
         // this.keyboard
 
         /*
@@ -20,6 +22,8 @@ class Keyboard {
         window.onkeypress = (e) => {
 
             this.keypress = true;
+
+            this.control = false;
 
             // if (e.which >= 48 && e.which <= 90) {
             //     //For Regular keys
@@ -55,10 +59,15 @@ class Keyboard {
                 if(this.keypress){
                     this.keypress = false;
                 }else{
-
                     switch (e.key.toLowerCase()){
                         case "backspace":
                             this.backSpace();
+                            break;
+                        case "control":
+                            this.control = true;
+                            break;
+                        case "a":
+                            //@todo change selection
                             break;
                     }
                 }
