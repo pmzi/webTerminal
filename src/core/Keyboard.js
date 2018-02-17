@@ -5,6 +5,8 @@ class Keyboard {
 
         this.wrapper = document.getElementById(wrapperId);
 
+        this.History = require("./History");
+
         // For KeyBoards
 
         this.keypress = false;
