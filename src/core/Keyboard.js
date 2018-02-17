@@ -1,3 +1,5 @@
+const History = require("./History");
+
 class Keyboard {
     constructor(wrapperId) {
 
@@ -5,7 +7,7 @@ class Keyboard {
 
         this.wrapper = document.getElementById(wrapperId);
 
-        this.History = require("./History");
+        this.History = new History();
 
         // For KeyBoards
 
@@ -41,6 +43,11 @@ class Keyboard {
                     let terminalSubmitEvent = new CustomEvent("terminal:submitPartial",{detail:this.wrapper.querySelector("[data-active=true]>.contentOfTheLine").innerText});
                     document.dispatchEvent(terminalSubmitEvent);
                 }else{
+
+                    //add event to the history
+
+                    this.History.add(this.wrapper.querySelector("[data-active=true]>.contentOfTheLine").innerText);
+
                     let terminalSubmitEvent = new CustomEvent("terminal:submit",{detail:this.wrapper.querySelector("[data-active=true]>.contentOfTheLine").innerText});
                     document.dispatchEvent(terminalSubmitEvent);
                 }
@@ -61,6 +68,7 @@ class Keyboard {
                 if(this.keypress){
                     this.keypress = false;
                 }else{
+
                     switch (e.key.toLowerCase()){
                         case "backspace":
                             this.backSpace();
@@ -70,6 +78,12 @@ class Keyboard {
                             break;
                         case "a":
                             //@todo change selection
+                            break;
+                        case "arrowup":
+                            this.typeSen(this.History.prevHistory());
+                            break;
+                        case "arrowdown":
+                            this.typeSen(this.History.nextHistory());
                             break;
                     }
                 }
@@ -103,6 +117,23 @@ class Keyboard {
 
 
     }
+
+    clearLine(){
+
+        let activeLine = this.wrapper.querySelector("[data-active=true]>.contentOfTheLine");
+
+        activeLine.innerText = "";
+
+    }
+
+    typeSen(sen){
+
+        let activeLine = this.wrapper.querySelector("[data-active=true]>.contentOfTheLine");
+
+        activeLine.innerText = sen;
+
+    }
+
 }
 
 module.exports = Keyboard;
