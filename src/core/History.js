@@ -4,7 +4,7 @@ class History{
 
         this.history = [];
 
-        this.current = 1;
+        this.current = 0;
 
     }
 
